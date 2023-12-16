@@ -29,6 +29,11 @@
                 <span asp-validation-for="ID_Category" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ID_BookOwner" class="control-label"></label>
+                <select asp-for="ID_BookOwner" class="form-control" asp-items="ViewBag.ID_BookOwner"></select>
+                <span asp-validation-for="ID_BookOwner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
                 <input asp-for="Image" class="form-control" />
                 <span asp-validation-for="Image" class="text-danger"></span>

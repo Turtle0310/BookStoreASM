@@ -37,6 +37,20 @@ namespace Final_Asm.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "bookAccs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Account = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_bookAccs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "categorys",
                 columns: table => new
                 {
@@ -77,6 +91,24 @@ namespace Final_Asm.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "bookOwners",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    NameStore = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_bookOwners", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_bookOwners_bookAccs_Id",
+                        column: x => x.Id,
+                        principalTable: "bookAccs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "books",
                 columns: table => new
                 {
@@ -85,6 +117,7 @@ namespace Final_Asm.Migrations
                     NameBook = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ID_Author = table.Column<int>(type: "int", nullable: false),
                     ID_Category = table.Column<int>(type: "int", nullable: false),
+                    ID_BookOwner = table.Column<int>(type: "int", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     Nums = table.Column<int>(type: "int", nullable: false)
@@ -99,6 +132,12 @@ namespace Final_Asm.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_books_bookOwners_ID_BookOwner",
+                        column: x => x.ID_BookOwner,
+                        principalTable: "bookOwners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_books_categorys_ID_Category",
                         column: x => x.ID_Category,
                         principalTable: "categorys",
@@ -110,6 +149,11 @@ namespace Final_Asm.Migrations
                 name: "IX_books_ID_Author",
                 table: "books",
                 column: "ID_Author");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_books_ID_BookOwner",
+                table: "books",
+                column: "ID_BookOwner");
 
             migrationBuilder.CreateIndex(
                 name: "IX_books_ID_Category",
@@ -135,7 +179,13 @@ namespace Final_Asm.Migrations
                 name: "authors");
 
             migrationBuilder.DropTable(
+                name: "bookOwners");
+
+            migrationBuilder.DropTable(
                 name: "categorys");
+
+            migrationBuilder.DropTable(
+                name: "bookAccs");
         }
     }
 }

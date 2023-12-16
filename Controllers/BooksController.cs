@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Final_Asm.Data;
 using Final_Asm.Models;
-using System.Net;
 
 namespace Final_Asm.Controllers
 {
@@ -23,7 +22,7 @@ namespace Final_Asm.Controllers
         // GET: Books
         public async Task<IActionResult> Index()
         {
-            var final_AsmContext = _context.books.Include(b => b.Author).Include(b => b.Category);
+            var final_AsmContext = _context.books.Include(b => b.Author).Include(b => b.BookOwner).Include(b => b.Category);
             return View(await final_AsmContext.ToListAsync());
         }
 
@@ -37,13 +36,14 @@ namespace Final_Asm.Controllers
 
             var book = await _context.books
                 .Include(b => b.Author)
+                .Include(b => b.BookOwner)
                 .Include(b => b.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
                 return NotFound();
             }
-
+            ViewBag.ID = id;
             return View(book);
         }
 
@@ -51,6 +51,7 @@ namespace Final_Asm.Controllers
         public IActionResult Create()
         {
             ViewData["ID_Author"] = new SelectList(_context.authors, "ID", "Description");
+            ViewData["ID_BookOwner"] = new SelectList(_context.bookOwners, "Id", "NameStore");
             ViewData["ID_Category"] = new SelectList(_context.categorys, "Id", "Name");
             return View();
         }
@@ -60,7 +61,7 @@ namespace Final_Asm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameBook,ID_Author,ID_Category,Image,Price,Nums")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,NameBook,ID_Author,ID_Category,ID_BookOwner,Image,Price,Nums")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -69,6 +70,7 @@ namespace Final_Asm.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ID_Author"] = new SelectList(_context.authors, "ID", "Description", book.ID_Author);
+            ViewData["ID_BookOwner"] = new SelectList(_context.bookOwners, "Id", "NameStore", book.ID_BookOwner);
             ViewData["ID_Category"] = new SelectList(_context.categorys, "Id", "Name", book.ID_Category);
             return View(book);
         }
@@ -87,6 +89,7 @@ namespace Final_Asm.Controllers
                 return NotFound();
             }
             ViewData["ID_Author"] = new SelectList(_context.authors, "ID", "Description", book.ID_Author);
+            ViewData["ID_BookOwner"] = new SelectList(_context.bookOwners, "Id", "NameStore", book.ID_BookOwner);
             ViewData["ID_Category"] = new SelectList(_context.categorys, "Id", "Name", book.ID_Category);
             return View(book);
         }
@@ -96,7 +99,7 @@ namespace Final_Asm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameBook,ID_Author,ID_Category,Image,Price,Nums")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameBook,ID_Author,ID_Category,ID_BookOwner,Image,Price,Nums")] Book book)
         {
             if (id != book.Id)
             {
@@ -124,6 +127,7 @@ namespace Final_Asm.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ID_Author"] = new SelectList(_context.authors, "ID", "Description", book.ID_Author);
+            ViewData["ID_BookOwner"] = new SelectList(_context.bookOwners, "Id", "NameStore", book.ID_BookOwner);
             ViewData["ID_Category"] = new SelectList(_context.categorys, "Id", "Name", book.ID_Category);
             return View(book);
         }
@@ -138,6 +142,7 @@ namespace Final_Asm.Controllers
 
             var book = await _context.books
                 .Include(b => b.Author)
+                .Include(b => b.BookOwner)
                 .Include(b => b.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
@@ -166,7 +171,7 @@ namespace Final_Asm.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        
+
         private bool BookExists(int id)
         {
           return (_context.books?.Any(e => e.Id == id)).GetValueOrDefault();

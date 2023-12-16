@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(model => model.Category)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.BookOwner)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Image)
             </th>
             <th>
@@ -40,14 +43,16 @@
                 @Html.DisplayFor(modelItem => item.NameBook)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Author.Name)
+                @Html.DisplayFor(modelItem => item.Author.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.BookOwner.NameStore)
+            </td>
+            <td>
                     <img src="~/images/@Html.DisplayFor(modelItem => item.Image)">
-                
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

@@ -16,6 +16,9 @@ namespace Final_Asm.Models
         [Required] public int ID_Category { get; set; }
         public virtual Category? Category { get; set; }
 
+        [ForeignKey("BookOwner")]
+        [Required] public int ID_BookOwner { get; set; }
+        public virtual BookOwner? BookOwner { get; set; }
 
         [Required] public string Image { get; set; } = null!;
         [Required] public int Price { get; set; }

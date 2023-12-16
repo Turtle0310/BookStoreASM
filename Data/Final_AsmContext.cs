@@ -25,6 +25,9 @@ namespace Final_Asm.Data
 
         public DbSet<Final_Asm.Models.UploadFile> uploadFiles { get; set; } = default!;
 
+        public DbSet<Final_Asm.Models.OwnerAcc> bookAccs { get; set; } = default!;
+        public DbSet<Final_Asm.Models.BookOwner> bookOwners { get; set; } = default!;
+
 
     }
 }

@@ -74,6 +74,9 @@ namespace Final_Asm.Migrations
                     b.Property<int>("ID_Author")
                         .HasColumnType("int");
 
+                    b.Property<int>("ID_BookOwner")
+                        .HasColumnType("int");
+
                     b.Property<int>("ID_Category")
                         .HasColumnType("int");
 
@@ -95,9 +98,25 @@ namespace Final_Asm.Migrations
 
                     b.HasIndex("ID_Author");
 
+                    b.HasIndex("ID_BookOwner");
+
                     b.HasIndex("ID_Category");
 
                     b.ToTable("books");
+                });
+
+            modelBuilder.Entity("Final_Asm.Models.BookOwner", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NameStore")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("bookOwners");
                 });
 
             modelBuilder.Entity("Final_Asm.Models.Category", b =>
@@ -138,6 +157,27 @@ namespace Final_Asm.Migrations
                     b.ToTable("customers");
                 });
 
+            modelBuilder.Entity("Final_Asm.Models.OwnerAcc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Account")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("bookAccs");
+                });
+
             modelBuilder.Entity("Final_Asm.Models.UploadFile", b =>
                 {
                     b.Property<int>("ID")
@@ -163,6 +203,12 @@ namespace Final_Asm.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Final_Asm.Models.BookOwner", "BookOwner")
+                        .WithMany()
+                        .HasForeignKey("ID_BookOwner")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Final_Asm.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("ID_Category")
@@ -171,7 +217,20 @@ namespace Final_Asm.Migrations
 
                     b.Navigation("Author");
 
+                    b.Navigation("BookOwner");
+
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Final_Asm.Models.BookOwner", b =>
+                {
+                    b.HasOne("Final_Asm.Models.OwnerAcc", "OwnerAcc")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OwnerAcc");
                 });
 #pragma warning restore 612, 618
         }
